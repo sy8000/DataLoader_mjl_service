@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication//(exclude = {DataSourceAutoConfiguration.class})
 @EnableTransactionManagement
+@EnableScheduling
 //@MapperScan(basePackages = "cn.besbing.*")
 public class MjlApplication {
 

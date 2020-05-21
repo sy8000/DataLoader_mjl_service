@@ -1,6 +1,7 @@
 package cn.besbing.config;
 
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -33,17 +34,26 @@ public class DataSourceSlave {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private SlaveConfigFile slaveConfigFile;
+
 
     @Bean(name = "slaveDataSource")
     //@ConfigurationProperties(prefix = "spring.datasource.two")
     public DataSource dataSource(){
-        return DataSourceBuilder.create()
+        /*return DataSourceBuilder.create()
                 .driverClassName(env.getProperty("spring.datasource.two.driver"))
                 .url(env.getProperty("spring.datasource.two.url"))
                 .username(env.getProperty("spring.datasource.two.username"))
                 .password(env.getProperty("spring.datasource.two.password"))
-                .build();
-        //return DataSourceBuilder.create().build();
+                .build();*/
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setDriverClassName(slaveConfigFile.driver);
+        druidDataSource.setUrl(slaveConfigFile.url);
+        druidDataSource.setUsername(slaveConfigFile.username);
+        druidDataSource.setPassword(slaveConfigFile.password);
+        return druidDataSource;
+
     }
 
 

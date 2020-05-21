@@ -1,14 +1,13 @@
 package cn.besbing.config;
 
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -18,7 +17,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 //import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
@@ -34,18 +32,28 @@ public class DataSourcePrimary {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private PrimaryConfigFile primaryConfigFile;
+
 
     @Bean(name = "primaryDataSource")
     @Primary
-    //@ConfigurationProperties(prefix = "spring.datasource.one")
+    //@ConfigurationProperties(prefix = "spring.datasource.one.druid")
     public DataSource dataSource(){
         //return DataSourceBuilder.create().build();
-        return DataSourceBuilder.create()
+        /*return DataSourceBuilder.create()
                 .driverClassName(env.getProperty("spring.datasource.one.driver"))
                 .url(env.getProperty("spring.datasource.one.url"))
                 .username(env.getProperty("spring.datasource.one.username"))
                 .password(env.getProperty("spring.datasource.one.password"))
-                .build();
+                .build();*/
+        // new DruidDataSource();
+        DruidDataSource druidDataSource = new DruidDataSource();
+        druidDataSource.setDriverClassName(primaryConfigFile.driver);
+        druidDataSource.setUrl(primaryConfigFile.url);
+        druidDataSource.setUsername(primaryConfigFile.username);
+        druidDataSource.setPassword(primaryConfigFile.password);
+        return druidDataSource;
     }
 
 
